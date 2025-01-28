@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Personal</title>
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
+
+    <!-- Agregar las referencias a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Agregar las referencias a Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+	<!-- Menú de navegación -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 1049;">
+            <a class="navbar-brand" href="/incidencias">
+                <img th:src="@{/images/logo.png}" alt="Logo de la aplicación Bellota 112" class="logo-image" style="width: 50px; height: auto;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/incidencias">Incidencias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/personal}">Personal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/verUsuario}">Mis Datos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2>Personal de la zona.</h2>
+        
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+		<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Identificación</th>
+                    <th>Bellota</th>
+                    <th>Cuerpo</th> <!-- Columna para la reseña -->
+                    <th>Rango</th> <!-- Columna para la puntuación -->
+                    <th>Zona</th>
+                    <th th:if="${usuarioActual.role.equals('ADMIN') or usuarioActual.role.equals('ADMINLOCAL')}">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+			    <!-- Iterar sobre los usuario -->
+                <tr th:each="usuario : ${usuarios}">
+                    <td>
+                    	<a th:href="@{/verUsuario/{id}(id=${usuario.id})}" th:text="${usuario.nombre}"></a>
+					</td>
+                    <td th:text="${usuario.identificacion}"></td>
+                    <td th:text="${usuario.bellota}"></td>
+                    <td th:text="${usuario.cuerpo}"></td>
+                    <td th:text="${usuario.rango}"></td>
+                    <td th:text="${usuario.zona}"></td>
+                    <td th:if="${usuarioActual.role.equals('ADMIN') or usuarioActual.role.equals('ADMINLOCAL')}">
+                        <a th:href="@{/actualizarUsuarioAdmin/{id}(id=${usuario.id})}" class="btn btn-warning">Editar</a>
+                        <a th:if="${usuario.activo}" th:href="@{/desactivarUsuario/{id}(id=${usuario.id})}" class="btn btn-danger btn-sm">Desactivar</a>
+                        <a th:unless="${usuario.activo}" th:href="@{/activarUsuario/{id}(id=${usuario.id})}" class="btn btn-success btn-sm">Activar</a>
+                    </td>
+                </tr>
+			</tbody>
+        </table>
+    </div>
+    
+    <!-- Botón para dar de alta usuarios, visible solo para ADMIN y ADMINLOCAL -->
+        <div th:if="${usuarioActual.role.equals('ADMIN') or usuarioActual.role.equals('ADMINLOCAL')}" class="container mt-5">
+            <a th:href="@{/registro}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Dar de Alta
+            </a>
+        </div>
+    
+
+    <!-- Agregar las referencias a Bootstrap JS y Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

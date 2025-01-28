@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualizar Usuario</title>
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 1049;">
+            <a class="navbar-brand" href="/incidencias">
+                <img th:src="@{/images/logo.png}" alt="Logo de la aplicación Bellota 112" class="logo-image" style="width: 50px; height: auto;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/incidencias">Incidencias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/personal}">Personal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/verUsuario}">Mis Datos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2>Actualizar Información del Usuario</h2>
+
+        <!-- Formulario para actualizar usuario -->
+        <form th:action="@{/actualizarUsuarioAdmin/{id}(id=${usuario.id})}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" required/>
+            </div>
+            
+            <p class="card-text"><strong>Email:</strong> <span th:text="${usuario.email}"></span></p>
+            
+            <div class="form-group" th:if="${usuarioActual?.role.equals('ADMIN') or usuarioActual?.role.equals('ADMINLOCAL')}">
+				<label for="role">Rol</label>
+			    <select id="role" name="role" class="form-control">
+			    	<option th:value="${usuario.role}" disabled selected>
+			            <span th:text="${usuario.role == 'USER' ? 'Usuario' : (usuario.role == 'ADMIN' ? 'Administrador' : (usuario.role == 'ADMINLOCAL' ? 'Administrador Local' : ''))}"></span>
+			        </option>
+			    	<option value="USER">Usuario</option>
+			        <option th:if="${usuarioActual?.role.equals('ADMIN')}" value="ADMIN">Administrador</option>
+			        <option value="ADMINLOCAL">Administrador Local</option>
+				</select>
+			</div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" class="form-control" id="telefono" name="telefono" th:value="${usuario.telefono}" pattern="\d*" maxlength="9" />
+                <small class="form-text text-muted">Debe contener 9 dígitos.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="identificacion">Identificación</label>
+                <input type="text" id="identificacion" name="identificacion" class="form-control" th:value="${usuario.identificacion}">
+            </div>
+            
+            <div class="form-group">
+		        <label for="zona">Zona:</label>
+		        <select class="form-control" id="zona" name="zona">
+		            <option th:value="${usuario.zona}" disabled selected><span th:text="${usuario.zona}"></span></option>
+		         </select>
+		    </div>
+		    
+		    <div class="form-group">
+			    <label for="cuerpo">Cuerpo</label>
+			    <select id="cuerpo" name="cuerpo" class="form-control">
+			        <option th:value="${usuario.cuerpo}" disabled selected><span th:text="${usuario.cuerpo}"></span></option>
+			        <option value="Bomberos">Bomberos</option>
+			        <option value="Cruz Roja">Cruz Roja</option>
+			        <option value="Policía Local">Policía Local</option>
+			        <option value="Policía Nacional">Policía Nacional</option>
+			        <option value="Guardia Civil">Guardia Civil</option>
+			        <option value="Protección Civil">Protección Civil</option>
+			        <option value="112 Extremadura">112 Extremadura</option>
+			        <option value="Servicios Sanitarios">Servicios Sanitarios</option>
+			        <option value="Otros">Otros</option>
+			    </select>
+			</div>
+			
+			<div class="form-group">
+                <label for="rango">Rango</label>
+                <input type="text" id="rango" name="rango" class="form-control" th:value="${usuario.rango}">
+            </div>
+            
+            <div class="form-group">
+                <label for="bellota">Bellota</label>
+                <input type="number" id="bellota" name="bellota" class="form-control" th:value="${usuario.bellota}" min="0">
+            </div>
+            
+            <!-- Agregar un campo oculto con el id del usuario -->
+            <input type="hidden" name="id" th:value="${usuario.id}" />
+            
+            <button type="submit" class="btn btn-success">Guardar Cambios</button>
+        </form>
+        
+        <!-- Enlace para volver al panel del usuario -->
+        <a th:href="@{/personal}" class="btn btn-secondary mt-3">Volver al Panel</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/json/pueblos_extremadura.json')
+                .then(response => response.json())
+                .then(pueblos => {
+                    const selectZona = document.getElementById('zona');
+                    pueblos.forEach(pueblo => {
+                        const option = document.createElement('option');
+                        option.value = pueblo;
+                        option.text = pueblo;
+                        selectZona.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar el JSON:', error));
+        });
+            
+        // Validación del formulario antes de enviar
+        function validarFormulario() {
+            const telefono = document.getElementById("telefono").value;
+
+            // Si el teléfono está vacío, no enviamos el campo
+            if (telefono.trim() === "") {
+                document.getElementById("telefono").removeAttribute("name"); // Remueve el campo teléfono del formulario
+                return true;
+            }
+
+            // Validar que el teléfono tenga exactamente 9 dígitos
+            if (!/^\d{9}$/.test(telefono)) {
+                alert("El número de teléfono debe contener exactamente 9 dígitos.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>
