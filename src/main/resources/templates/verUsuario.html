@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Mis Datos</title>
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
+    
+    <!-- Referencias a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Referencias a Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+    <!-- Menú de navegación -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 1049;">
+            <a class="navbar-brand" href="/incidencias">
+                <img th:src="@{/images/logo.png}" alt="Logo de la aplicación Bellota 112" class="logo-image" style="width: 50px; height: auto;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/incidencias">Incidencias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/personal}">Personal</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/verUsuario}">Mis Datos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2>Mis Datos</h2>
+        <div class="card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <!-- Datos del usuario en el lado izquierdo -->
+                <div class="user-info">
+                    <p class="card-text"><strong>Nombre Completo:</strong> <span th:text="${usuario.nombre}"></span></p>
+                    <p class="card-text"><strong>Email:</strong> <span th:text="${usuario.email}"></span></p>
+                    <p class="card-text"><strong>Rol:</strong> <span th:text="${usuario.role}"></span></p>
+                    <p class="card-text"><strong>Teléfono:</strong> <span th:text="${usuario.telefono}"></span></p>
+                    <p class="card-text"><strong>Identificación:</strong> <span th:text="${usuario.identificacion}"></span></p>
+                    <p class="card-text"><strong>Zona:</strong> <span th:text="${usuario.zona}"></span></p>
+                    <p class="card-text"><strong>Cuerpo:</strong> <span th:text="${usuario.cuerpo}"></span></p>
+                    <p class="card-text"><strong>Rango:</strong> <span th:text="${usuario.rango}"></span></p>
+                    <p class="card-text"><strong>Bellota:</strong> <span th:text="${usuario.bellota}"></span></p>
+                </div>
+                <!-- Foto del usuario en el lado derecho -->
+                <div class="user-photo">
+                	<p class="card-text">
+                        <span th:if="${usuario.activo}" class="badge badge-success">Activo</span>
+                        <span th:if="${!usuario.activo}" class="badge badge-danger">Inactivo</span>
+                    </p>
+                
+				      
+				    <!-- Si la foto es null, muestra la imagen por defecto -->
+				    <img th:src="@{/images/sinfoto.png}" alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">                
+				</div>
+            </div>
+        </div>
+
+        <!-- Botón para actualizar los datos del usuario -->
+        <div class="mt-3 text-center">
+            <a th:href="@{/actualizarUsuario/{id}(id=${usuario.id})}" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Actualizar
+            </a>
+        </div>
+    </div>
+
+    <!-- Agregar las referencias a Bootstrap JS y Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
