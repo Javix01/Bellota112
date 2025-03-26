@@ -50,12 +50,13 @@ Base de datos:
 3. Configuración:
 Configurar la conexión a MongoDB en application.properties:
 
-*spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112*
+   *spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112*
 
 4. Ejecución:
-mvn spring-boot:run*
+   *mvn spring-boot:run*
 
 ## Estructura del proyecto 📂
+```text
 src/
 ├── main/
 │   ├── java/
@@ -70,21 +71,10 @@ src/
 │       ├── templates/            # Vistas Thymeleaf
 │       └── application.properties
 └── test/                         # Pruebas
+```
 
-## Capturas de pantalla 🖼️
-Login: Interfaz de inicio de sesión
-
-Gestión de incidencias: Listado y detalle de incidencias
-
-Gestión de usuarios: Listado y edición de usuarios
-
-Perfil de usuario: Visualización y actualización de datos
-
-Mejoras pendientes 📌
-Procesamiento de fotos desde la web
-
-Implementación de footer
-
-Mejoras en la gestión de contraseñas
-
-Notificaciones en tiempo real con WebSockets
+## Mejoras pendientes 📌
+- Procesamiento de fotos desde la web
+- Implementación de footer
+- Mejoras en la gestión de contraseñas
+- Notificaciones en tiempo real con WebSockets
