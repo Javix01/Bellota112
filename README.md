@@ -38,27 +38,24 @@ Base de datos:
 
 ## Configuración ⚙️
 1. Requisitos:
-- Java 17
-- Maven
-- MongoDB Atlas
+  - Java 17
+  - Maven
+  - MongoDB Atlas
 
 2. Instalación:
-- git clone https://github.com/Javix01/Bellota112.git
-- cd Bellota112
-- mvn clean install
+  - git clone https://github.com/Javix01/Bellota112.git
+  - cd Bellota112
+  - mvn clean install
 
- Configuración:
-
+3. Configuración:
 Configurar la conexión a MongoDB en application.properties:
 
-spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112
-Ejecución:
+*spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112*
 
-bash
-Copy
-mvn spring-boot:run
-Estructura del proyecto 📂
-Copy
+4. Ejecución:
+mvn spring-boot:run*
+
+## Estructura del proyecto 📂
 src/
 ├── main/
 │   ├── java/
@@ -73,7 +70,8 @@ src/
 │       ├── templates/            # Vistas Thymeleaf
 │       └── application.properties
 └── test/                         # Pruebas
-Capturas de pantalla 🖼️
+
+## Capturas de pantalla 🖼️
 Login: Interfaz de inicio de sesión
 
 Gestión de incidencias: Listado y detalle de incidencias
