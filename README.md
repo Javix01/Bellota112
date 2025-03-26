@@ -48,12 +48,16 @@ Base de datos:
   - mvn clean install
 
 3. Configuración:
-Configurar la conexión a MongoDB en application.properties:
+   Configurar la conexión a MongoDB en application.properties:
+   ```text
+   spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112
+   ```
 
-   *spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112*
-
-4. Ejecución:
-   *mvn spring-boot:run*
+5. Ejecución:
+   ```text
+   mvn spring-boot:run
+   ```
+   
 
 ## Estructura del proyecto 📂
 ```text
