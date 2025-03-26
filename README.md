@@ -10,14 +10,14 @@ Bellota112 es una aplicación web desarrollada en Spring Boot diseñada para el 
 ## Características principales ✨
 - Autenticación segura: Uso de BCrypt para el hash de contraseñas
 - Roles de usuario:
-- - ADMIN: Acceso completo
+  - ADMIN: Acceso completo
   - ADMINLOCAL: Gestión de usuarios e incidencias en su zona
   - USER: Acceso básico
 - Gestión de incidencias: Creación, actualización y cierre de incidencias
 - Filtrado por zona y cuerpo de emergencia
 - Visualización en mapa con OpenStreetMap
 - Gestión de usuarios:
-- - Registro con validación
+  - Registro con validación
   - Actualización de perfiles
   - Activación/desactivación de cuentas
 
@@ -25,44 +25,32 @@ Bellota112 es una aplicación web desarrollada en Spring Boot diseñada para el 
 Backend:
 - Java 17
 - Spring Boot 3.4.0
-
-Spring Security
-
-Spring Data MongoDB
+- Spring Security
+- Spring Data MongoDB
 
 Frontend:
-
-Thymeleaf
-
-Bootstrap 4.5
-
-Leaflet (para mapas)
+- Thymeleaf
+- Bootstrap 4.5
+- Leaflet (para mapas)
 
 Base de datos:
+- MongoDB Atlas
 
-MongoDB Atlas
+## Configuración ⚙️
+1. Requisitos:
+- Java 17
+- Maven
+- MongoDB Atlas
 
-Configuración ⚙️
-Requisitos:
+2. Instalación:
+- git clone https://github.com/Javix01/Bellota112.git
+- cd Bellota112
+- mvn clean install
 
-Java 17
-
-Maven
-
-MongoDB Atlas (o local)
-
-Instalación:
-
-bash
-Copy
-git clone [URL del repositorio]
-cd Bellota112
-mvn clean install
-Configuración:
+ Configuración:
 
 Configurar la conexión a MongoDB en application.properties:
 
-Copy
 spring.data.mongodb.uri=mongodb+srv://usuario:contraseña@cluster.mongodb.net/Bellota112
 Ejecución:
 
