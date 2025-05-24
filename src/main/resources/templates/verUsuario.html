@@ -56,17 +56,22 @@
                     <p class="card-text"><strong>Rango:</strong> <span th:text="${usuario.rango}"></span></p>
                     <p class="card-text"><strong>Bellota:</strong> <span th:text="${usuario.bellota}"></span></p>
                 </div>
-                <!-- Foto del usuario en el lado derecho -->
+                <!-- En verUsuario.html -->
                 <div class="user-photo">
-                	<p class="card-text">
+                    <!-- Estado activo/inactivo -->
+                    <p class="card-text">
                         <span th:if="${usuario.activo}" class="badge badge-success">Activo</span>
                         <span th:if="${!usuario.activo}" class="badge badge-danger">Inactivo</span>
                     </p>
-                
-				      
-				    <!-- Si la foto es null, muestra la imagen por defecto -->
-				    <img th:src="@{/images/sinfoto.png}" alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">                
-				</div>
+
+                    <!-- Mostrar foto en base64 -->
+                    <img th:if="${usuario.foto}" th:src="${usuario.foto}"
+                         alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">
+
+                    <!-- Foto por defecto si no hay foto -->
+                    <img th:unless="${usuario.foto}" th:src="@{/images/sinfoto.png}"
+                         alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">
+                </div>
             </div>
         </div>
 

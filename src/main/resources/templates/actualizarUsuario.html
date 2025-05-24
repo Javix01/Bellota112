@@ -40,7 +40,8 @@
         <h2>Actualizar Información del Usuario</h2>
 
         <!-- Formulario para actualizar usuario -->
-		<form action="/actualizarUsuario" method="post" enctype="multipart/form-data">
+        <form th:action="@{/actualizarUsuario}" method="post" enctype="multipart/form-data">
+            <!-- Campos del formulario... -->
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" required/>
@@ -57,6 +58,12 @@
             <div class="form-group">
                 <label for="password">Contraseña: (dejar en blanco para no modificar)</label>
                 <input type="password" id="password" name="password" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label for="foto">Foto de perfil</label>
+                <input type="file" class="form-control-file" id="foto" name="foto" accept="image/jpeg, image/png">
+                <small class="form-text text-muted">Formatos aceptados: JPG, PNG (max 2MB)</small>
             </div>
             
             <!-- Agregar un campo oculto con el id del usuario -->

@@ -20,6 +20,7 @@ public class Usuario {
     private String rango;
     private int bellota;
     private boolean activo;
+	private String foto; //string de la foto en base 64
     
 	public Usuario() {
 		// TODO Auto-generated constructor stub
@@ -119,5 +120,13 @@ public class Usuario {
 
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 }

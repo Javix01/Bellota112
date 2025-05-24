@@ -1,5 +1,6 @@
 package com.Bellota112.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +18,8 @@ import com.Bellota112.demo.services.UsuarioService;
 @Controller
 public class IncidenciaController {
 
-	private final IncidenciaService incidenciaService;
-	private final UsuarioService usuarioService;
+    private final IncidenciaService incidenciaService;
+    private final UsuarioService usuarioService;
 
     @Autowired
     public IncidenciaController(IncidenciaService incidenciaService, UsuarioService usuarioService) {
@@ -27,7 +28,9 @@ public class IncidenciaController {
     }
 
     @GetMapping("/incidencias")
-    public String listarIncidencias(@RequestParam(value = "id", required = false) String id, Model model) {
+    public String listarIncidencias(@RequestParam(value = "id", required = false) String id,
+                                    @RequestParam(value = "filtro", required = false) String filtro,
+                                    Model model) {
         Usuario usuarioLogueado = usuarioService.obtenerUsuarioLogueado();
         List<IncidenciaConUsuario> incidenciasConUsuario = incidenciaService.obtenerIncidenciasConUsuario();
 
@@ -35,8 +38,21 @@ public class IncidenciaController {
         if (!"112 Extremadura".equals(usuarioLogueado.getCuerpo())) {
             incidenciasConUsuario = incidenciasConUsuario.stream()
                     .filter(incidenciaConUsuario ->
-                            usuarioLogueado.getCuerpo().equals(incidenciaConUsuario.getUsuario().getCuerpo()) &&
-                            usuarioLogueado.getZona().equals(incidenciaConUsuario.getUsuario().getZona()))
+                            incidenciaConUsuario.getUsuario() != null &&
+                                    usuarioLogueado.getCuerpo().equals(incidenciaConUsuario.getUsuario().getCuerpo()) &&
+                                    usuarioLogueado.getZona().equals(incidenciaConUsuario.getUsuario().getZona()))
+                    .collect(Collectors.toList());
+        }
+
+        // Aplicar filtro adicional si está presente
+        if (filtro != null && !filtro.isEmpty()) {
+            incidenciasConUsuario = incidenciasConUsuario.stream()
+                    .filter(incidenciaConUsuario ->
+                            String.valueOf(incidenciaConUsuario.getIncidencias()).contains(filtro) ||
+                                    (incidenciaConUsuario.getLocalizacion() != null &&
+                                            String.valueOf(incidenciaConUsuario.getLocalizacion().getLatitud()).contains(filtro)) ||
+                                    (incidenciaConUsuario.getUsuario() != null &&
+                                            incidenciaConUsuario.getUsuario().getNombre().toLowerCase().contains(filtro.toLowerCase())))
                     .collect(Collectors.toList());
         }
 
@@ -44,31 +60,51 @@ public class IncidenciaController {
         IncidenciaConUsuario incidenciaSeleccionada = null;
         if (id != null) {
             incidenciaSeleccionada = incidenciasConUsuario.stream()
-                    .filter(incidenciaConUsuario -> incidenciaConUsuario.getIncidencia().getId().equals(id))
+                    .filter(incidenciaConUsuario -> id.equals(incidenciaConUsuario.getId()))
                     .findFirst()
                     .orElse(null);
         }
 
         // Verificar si hay incidencias activas
         boolean hayIncidenciasActivas = incidenciasConUsuario.stream()
-                .anyMatch(incidenciaConUsuario -> incidenciaConUsuario.getIncidencia().isActivo());
+                .anyMatch(incidenciaConUsuario -> incidenciaConUsuario.isActivo());
 
         model.addAttribute("incidenciaSeleccionada", incidenciaSeleccionada);
         model.addAttribute("incidenciasConUsuario", incidenciasConUsuario);
-        model.addAttribute("hayIncidenciasActivas", hayIncidenciasActivas);  // Añadimos esta variable
+        model.addAttribute("hayIncidenciasActivas", hayIncidenciasActivas);
+        model.addAttribute("filtro", filtro); // Para mantener el filtro en la vista
         return "incidencias";
     }
-    
+
     @GetMapping("/cambiarEstadoIncidencia/{id}")
     public String cambiarEstadoIncidencia(@PathVariable String id, Model model) {
         Incidencia incidencia = incidenciaService.obtenerIncidenciaPorId(id);
         if (incidencia != null) {
-            incidencia.setActivo(!incidencia.isActivo()); // Cambia el estado
-            incidenciaService.actualizarIncidencia(incidencia); // Guarda el cambio en la base de datos
+            incidencia.setActivo(!incidencia.isActivo());
+            incidencia.setUpdatedAt(LocalDateTime.now()); // Actualizar fecha de modificación
+            incidenciaService.actualizarIncidencia(incidencia);
             model.addAttribute("success", "Estado de la incidencia actualizado correctamente.");
         } else {
             model.addAttribute("error", "Incidencia no encontrada.");
         }
-        return "redirect:/incidencias"; // Redirige a la página de lista de incidencias
+        return "redirect:/incidencias";
+    }
+
+    @PostMapping("/incidencias/guardar")
+    public String guardarIncidencia(@ModelAttribute Incidencia incidencia, Model model) {
+        try {
+            if (incidencia.getId() == null || incidencia.getId().isEmpty()) {
+                // Nueva incidencia
+                incidencia.setFechaCreacion(LocalDateTime.now());
+                incidencia.setCreatedAt(LocalDateTime.now());
+            }
+            incidencia.setUpdatedAt(LocalDateTime.now());
+
+            incidenciaService.guardarIncidencia(incidencia);
+            model.addAttribute("success", "Incidencia guardada correctamente.");
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al guardar la incidencia: " + e.getMessage());
+        }
+        return "redirect:/incidencias";
     }
 }

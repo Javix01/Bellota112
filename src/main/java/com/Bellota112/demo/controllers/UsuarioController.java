@@ -1,5 +1,6 @@
 package com.Bellota112.demo.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.Bellota112.demo.domain.Usuario;
 import com.Bellota112.demo.services.UsuarioService;
-
+import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import com.Bellota112.demo.services.EmailService;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Controller
 public class UsuarioController {
@@ -102,34 +110,55 @@ public class UsuarioController {
      * Procesar la actualización de los datos del usuario
      */
     @PostMapping("/actualizarUsuario")
-    public String actualizarUsuario(@ModelAttribute Usuario usuarioFormulario) throws IOException {
-        // Obtener el usuario logueado
+    public String actualizarUsuario(@ModelAttribute("usuario") Usuario usuarioFormulario, @RequestParam(value = "foto", required = false) MultipartFile foto, Model model) throws IOException {
+
         Usuario usuarioLogueado = usuarioService.obtenerUsuarioLogueado();
 
-        // Solo actualizar si el usuario está autorizado a hacerlo
         if (usuarioLogueado != null) {
-            // Actualizar los campos de nombre si han cambiado
-            if (usuarioFormulario.getNombre() != null && !usuarioFormulario.getNombre().equals(usuarioLogueado.getNombre())) {
+            // Actualizar campos básicos
+            if (usuarioFormulario.getNombre() != null && !usuarioFormulario.getNombre().isEmpty()) {
                 usuarioLogueado.setNombre(usuarioFormulario.getNombre());
             }
 
-            if (usuarioFormulario.getTelefono() != null && !usuarioFormulario.getTelefono().equals(usuarioLogueado.getTelefono())) {
+            if (usuarioFormulario.getTelefono() != null && !usuarioFormulario.getTelefono().isEmpty()) {
                 usuarioLogueado.setTelefono(usuarioFormulario.getTelefono());
             }
 
-            // Si se ha proporcionado una nueva contraseña, actualizarla
             if (usuarioFormulario.getPassword() != null && !usuarioFormulario.getPassword().isEmpty()) {
-                String encodedPassword = passwordEncoder.encode(usuarioFormulario.getPassword());  // Cifra la nueva contraseña
-                usuarioLogueado.setPassword(encodedPassword);  // Asigna la contraseña cifrada
+                usuarioLogueado.setPassword(passwordEncoder.encode(usuarioFormulario.getPassword()));
             }
 
-            // Guardar el usuario actualizado en la base de datos
+            // Manejar la foto (convertir a base64 solo si se subió una nueva)
+            if (foto != null && !foto.isEmpty()) {
+                usuarioLogueado.setFoto(convertirFotoABase64(foto));
+            }
+
             usuarioService.actualizarUsuario(usuarioLogueado);
         }
 
-        return "redirect:/verUsuario";  // Redirigir a la página de ver usuario
+        return "redirect:/verUsuario";
     }
-    
+
+    private String convertirFotoABase64(MultipartFile foto) throws IOException {
+        if (foto == null || foto.isEmpty()) {
+            return null;
+        }
+
+        // Validar tipo de imagen
+        String contentType = foto.getContentType();
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")) {
+            throw new IOException("Solo se permiten imágenes JPEG o PNG");
+        }
+
+        // Validar tamaño (ejemplo: máximo 2MB)
+        if (foto.getSize() > 2 * 1024 * 1024) {
+            throw new IOException("La imagen no puede superar los 2MB");
+        }
+
+        byte[] bytes = foto.getBytes();
+        return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(bytes);
+    }
+
     /**
      * Mostrar el formulario de actualización de usuario
      * Se recibe el 'id' para obtener el usuario a actualizar
