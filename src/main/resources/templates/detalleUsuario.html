@@ -62,11 +62,15 @@
                         <span th:if="${usuario.activo}" class="badge badge-success">Activo</span>
                         <span th:if="${!usuario.activo}" class="badge badge-danger">Inactivo</span>
                     </p>
-                
-				      
-				    <!-- Si la foto es null, muestra la imagen por defecto -->
-				    <img th:src="@{/images/sinfoto.png}" alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">                
-				</div>
+
+                    <!-- Mostrar foto en base64 -->
+                    <img th:if="${usuario.foto}" th:src="${usuario.foto}" alt="Foto de perfil"
+                         class="img-thumbnail" style="max-width: 200px;">
+
+                    <!-- Foto por defecto si no hay foto -->
+                    <img th:unless="${usuario.foto}" th:src="@{/images/sinfoto.png}"
+                         alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">
+                </div>
             </div>
         </div>
 

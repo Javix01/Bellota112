@@ -65,8 +65,8 @@
                     </p>
 
                     <!-- Mostrar foto en base64 -->
-                    <img th:if="${usuario.foto}" th:src="${usuario.foto}"
-                         alt="Foto del usuario" class="img-thumbnail" style="max-width: 200px;">
+                    <img th:if="${usuario.foto}" th:src="${usuario.foto}" alt="Foto de perfil"
+                         class="img-thumbnail" style="max-width: 200px;">
 
                     <!-- Foto por defecto si no hay foto -->
                     <img th:unless="${usuario.foto}" th:src="@{/images/sinfoto.png}"

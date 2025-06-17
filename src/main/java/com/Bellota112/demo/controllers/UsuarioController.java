@@ -110,7 +110,7 @@ public class UsuarioController {
      * Procesar la actualización de los datos del usuario
      */
     @PostMapping("/actualizarUsuario")
-    public String actualizarUsuario(@ModelAttribute("usuario") Usuario usuarioFormulario, @RequestParam(value = "foto", required = false) MultipartFile foto, Model model) throws IOException {
+    public String actualizarUsuario(@ModelAttribute("usuario") Usuario usuarioFormulario, @RequestParam(value = "fotoUsuario", required = false) MultipartFile foto, Model model) throws IOException {
 
         Usuario usuarioLogueado = usuarioService.obtenerUsuarioLogueado();
 

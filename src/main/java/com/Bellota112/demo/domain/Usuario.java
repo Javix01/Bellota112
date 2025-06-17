@@ -20,7 +20,7 @@ public class Usuario {
     private String rango;
     private int bellota;
     private boolean activo;
-	private String foto; //string de la foto en base 64
+    private String foto; //string de la foto en base 64
     
 	public Usuario() {
 		// TODO Auto-generated constructor stub
